@@ -21,7 +21,7 @@ DEBUG_FLAGS = -ggdb -O0 -fdiagnostics-color=always -pedantic-errors -Wall -Weffc
 RELEASE_FLAGS = -O3 -DNDEBUG -fdiagnostics-color=always -std=c++23
 
 # Targets
-all: debug release
+all: debug release printstandard
 
 debug: $(SRC_FILES)
 	@mkdir -p $(BUILD_DIR)
@@ -33,6 +33,9 @@ release: $(SRC_FILES)
 	@mkdir -p $(BUILD_DIR)
 	$(CXX) $(RELEASE_FLAGS) $^ -o $(RELEASE_OUTPUT)
 
+printstandard: PrintStandard.cpp
+	$(CXX) -std=c++23 $^ -o $(BUILD_DIR)/printstandard
+
 clean:
 	rm -rf $(BUILD_DIR)
 
@@ -40,4 +43,4 @@ clean:
 # Phony targets are not actual files; they are just names for commands to be executed.
 # This is useful to avoid conflicts with files that might have the same name as the target.
 
-.PHONY: all debug release clean
+.PHONY: all debug release clean printstandard
