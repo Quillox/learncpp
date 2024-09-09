@@ -4,23 +4,23 @@
 
 Started: 2024-09-03
 
-## [Chapter 0: Introduction](https://www.learncpp.com/cpp-tutorial/introduction-to-these-tutorials/)
+# [Chapter 0: Introduction](https://www.learncpp.com/cpp-tutorial/introduction-to-these-tutorials/)
 
-### C and C++’s philosophy
+## C and C++’s philosophy
 
-The underlying design philosophy of C and C++ can be summed up as “trust the programmer” -- which is both wonderful and dangerous. C++ is designed to allow the programmer a high degree of freedom to do what they want. However, this also means the language often won’t stop you from doing things that don’t make sense, because it will assume you’re doing so for some reason it doesn’t understand. There are quite a few pitfalls that new programmers are likely to fall into if caught unaware. This is one of the primary reasons why knowing what you shouldn’t do in C/C++ is almost as important as knowing what you should do.
+The underlying design philosophy of C and C++ can be summed up as "trust the programmer" -- which is both wonderful and dangerous. C++ is designed to allow the programmer a high degree of freedom to do what they want. However, this also means the language often won’t stop you from doing things that don’t make sense, because it will assume you’re doing so for some reason it doesn’t understand. There are quite a few pitfalls that new programmers are likely to fall into if caught unaware. This is one of the primary reasons why knowing what you shouldn’t do in C/C++ is almost as important as knowing what you should do.
 
-### C++ development
+## C++ development
 
 ![workflow](images/dev_workflow.png)
 
-#### Step 1: Define the problem that you would like to solve
+### Step 1: Define the problem that you would like to solve
 
-This is the “what” step, where you figure out what problem you are intending to solve. Coming up with the initial idea for what you would like to program can be the easiest step, or the hardest. But conceptually, it is the simplest. All you need is an idea that can be well defined, and you’re ready for the next step.
+This is the "what" step, where you figure out what problem you are intending to solve. Coming up with the initial idea for what you would like to program can be the easiest step, or the hardest. But conceptually, it is the simplest. All you need is an idea that can be well defined, and you’re ready for the next step.
 
-#### Step 2: Determine how you are going to solve the problem
+### Step 2: Determine how you are going to solve the problem
 
-This is the “how” step, where you determine how you are going to solve the problem you came up with in step 1. It is also the step that is most neglected in software development. The crux of the issue is that there are many ways to solve a problem -- however, some of these solutions are good and some of them are bad. Too often, a programmer will get an idea, sit down, and immediately start coding a solution. This often generates a solution that falls into the bad category.
+This is the "how" step, where you determine how you are going to solve the problem you came up with in step 1. It is also the step that is most neglected in software development. The crux of the issue is that there are many ways to solve a problem -- however, some of these solutions are good and some of them are bad. Too often, a programmer will get an idea, sit down, and immediately start coding a solution. This often generates a solution that falls into the bad category.
 
 Typically, good solutions have the following characteristics:
 
@@ -29,16 +29,16 @@ Typically, good solutions have the following characteristics:
 - They are built modularly, so parts can be reused or changed later without impacting other parts of the program.
 - They are robust, and can recover or give useful error messages when something unexpected happens.
 
-When you sit down and start coding right away, you’re typically thinking “I want to do <something>”, so you implement the solution that gets you there the fastest. This can lead to programs that are fragile, hard to change or extend later, or have lots of bugs. A bug is any kind of programming error that prevents the program from operating correctly.
+When you sit down and start coding right away, you’re typically thinking "I want to do <something>", so you implement the solution that gets you there the fastest. This can lead to programs that are fragile, hard to change or extend later, or have lots of bugs. A bug is any kind of programming error that prevents the program from operating correctly.
 
 Consequently, it’s worth your time to spend a little extra time up front (before you start coding) thinking about the best way to tackle a problem, what assumptions you are making, and how you might plan for the future, in order to save yourself a lot of time and trouble down the road.
 
-#### Step 3: Write the program
+### Step 3: Write the program
 **Best practice**
 
 Name the first/primary source code file in each program main.cpp. This makes it easy to determine which source code file is the primary one.
 
-#### Step 4: Compiling your source code
+### Step 4: Compiling your source code
 
 In order to compile C++ source code files, we use a C++ compiler. The C++ compiler sequentially goes through each source code (.cpp) file in your program and does two important tasks:
 
@@ -48,7 +48,7 @@ Second, the compiler translates your C++ code into machine language instructions
 
 Object files are typically named name.o or name.obj, where name is the same name as the .cpp file it was produced from.
 
-#### Step 5: Linking object files and libraries
+### Step 5: Linking object files and libraries
 
 After the compiler has successfully finished, another program called the linker kicks in. The linker’s job is to combine all of the object files and produce the desired output file (typically an executable file). This process is called linking.
 
@@ -56,9 +56,9 @@ First, the linker reads in each of the object files generated by the compiler an
 
 Second, the linker ensures all cross-file dependencies are resolved properly. For example, if you define something in one .cpp file, and then use it in a different .cpp file, the linker connects the two together. If the linker is unable to connect a reference to something with its definition, you’ll get a linker error, and the linking process will abort.
 
-Third, the linker also is capable of linking library files. A library file is a collection of precompiled code that has been “packaged up” for reuse in other programs.
+Third, the linker also is capable of linking library files. A library file is a collection of precompiled code that has been "packaged up" for reuse in other programs.
 
-#### Steps 6 & 7: Testing and Debugging
+### Steps 6 & 7: Testing and Debugging
 
 This is the fun part! You are now able to run your executable and see what it does!
 
@@ -66,9 +66,95 @@ Once you can run your program, then you can test it. Testing is the process of a
 
 If the program does not behave as expected, then you will have to do some debugging, which is the process of finding and fixing programming errors.
 
-### Compiler configuration
+## Compiler configuration
 See `ch00/makefile` for the configuration of the compiler.
 
 
-## [Chapter 1: C++ Basics](https://www.learncpp.com/cpp-tutorial/statements-and-the-structure-of-a-program/)
+# [Chapter 1: C++ Basics](https://www.learncpp.com/cpp-tutorial/statements-and-the-structure-of-a-program/)
+
+## Statements and the structure of a program
+
+### Statements
+A statement is a type of instruction that causes the program to perform some action. Types of statements:
+- Declaration statements
+    - Definition statements
+- Jump statements
+- Expression statements
+- Compound statements
+- Selection statements (conditionals)
+- Iteration statements (loops)
+- Try blocks
+
+### Functions and the main function
+A function is a collection of statements that get executed sequentially. Every C++ program must have a special function named **main**. When the program is run, the statements inside of `main` are executed in sequential order. The name of a function (or object, type, template, etc…) is called its identifier.
+
+### Dissecting Hello world!
+```cpp
+#include <iostream>             // 1
+                                // 2
+int main()                      // 3
+{                               // 4
+   std::cout << "Hello world!"; // 5
+   return 0;                    // 6
+}                               // 7
+```
+- Line 1: is a special type of line called a preprocessor directive, indicating that we would like to use the contents of the `iostream` library.
+- Line 3: define a function with identifier `main` that returns an integer.
+- Line 4 & 7: define the body of the `main` function.
+- Line 5: is a statement that **c**haracter **out**put to the console using the `<<` operator.
+- Line 6: is a statement that returns the integer value `0` to the operating system, indicating that the program completed successfully.
+
+## Comments
+- Single line comments: `//`
+- Multi-line comments: 
+```cpp
+/* This is a multi-line comment.
+ * the matching asterisks to the left
+ * can make this easier to read
+ */
+```
+Comments should be used for three things: 
+1. At the library, program, or function level, use comments to describe **what**.
+1. Inside the library, program, or function, use comments to describe **how**.
+1. At the statement level, use comments to describe **why**.
+
+## Introduction to objects and variables
+### Data and values
+In computing, data is any information that can be manipulated: reading, changing, and writing. The "Hello world" program manipulates the data "Hello World!" by sending it to the monitor to be displayed.
+
+A single piece of data is called a value. Common examples of values include letters (e.g. `a`), numbers (e.g. `5`), and text (e.g. `Hello`).
+
+### Random Access Memory (RAM)
+You can think of RAM as a series of numbered boxes that can be used to store data while the program is running.
+
+### Objects and variables
+In C++, direct memory access is discouraged. Instead, we access memory indirectly through an object. An object is a region of storage (usually memory) that can store a value, and has other associated properties. Rather than say "go get the value stored in box number 7532", we can say, "go get the value stored by this object" and let the compiler figure out where and how to retrieve the value.
+
+An **object** is used to store a value in memory. A **variable** is an object that has an identifier.
+
+### Variable instantiation
+```cpp
+int x; 
+```
+At **compile time**, this statement defines a variable, giving it the identifier `x`, and the data type `int`. At **runtime**, the variable will be instantiated (created and assigned a memory address). An instantiated object is sometimes called an **instance**.
+
+### Data types
+A **data type** (more commonly just called a **type**) determines what kind of value (e.g. a number, a letter, text, etc…) the object will store. In C++, the type of an object **must be known at compile time**, and that type can not be changed without recompiling the program (static typing).
+
+### Defining variables
+```cpp
+int a, double b; // wrong (compiler error)
+
+int a; double b; // correct (but not recommended)
+int a, b; // correct (but not recommended)
+
+// correct and recommended (easier to read)
+int a;
+int b;
+double c;
+```
+### Summary
+In C++, we use objects to access memory. A named object is called a variable. Variables have an identifier, a type, and a value (and some other attributes that aren’t relevant here). A variable’s type is used to determine how the value in memory should be interpreted.
+
+## (Variable assignment and initialization)[https://www.learncpp.com/cpp-tutorial/variable-assignment-and-initialization/]
 
