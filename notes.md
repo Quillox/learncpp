@@ -360,12 +360,412 @@ Avoid abbreviations (unless they are common/unambiguous), they make your code ha
 
 ## [Whitespace and basic formatting](https://www.learncpp.com/cpp-tutorial/whitespace-and-basic-formatting/)
 
+### Some language elements must be whitespace-separated
+
+```cpp
+int x; // int and x must be whitespace separated
+```
+
+Preprocessor directives (e.g. `#include <iostream>`) must be placed on separate lines
+
+Newlines are not allowed in quoted text.
+
+### Using whitespace to format code
+C++ is a whitespace-independent language:
+```cpp
+#include <iostream>
+int main(){std::cout<<"Hello world";return 0;}
+```
+vs
+```cpp
+#include <iostream>
+
+int main()
+{
+    std::cout << "Hello world";
+
+    return 0;
+}
+```
+
+```cpp
+int main()
+{
+    std::cout << "This is a really, really, really, really, really, really, really, "
+        "really long line\n"; // one extra indentation for continuation line
+
+    std::cout << "This is another really, really, really, really, really, really, really, "
+                 "really long line\n"; // text aligned with the previous line for continuation line
+
+    std::cout << "This one is short\n";
+
+    // Operators should be placed at the beginning of the next line
+    std::cout << 3 + 4
+    + 5 + 6
+    * 7 * 8;
+}
+```
 
 ## [Introduction to literals and operators](https://www.learncpp.com/cpp-tutorial/introduction-to-literals-and-operators/)
+
+### Literals
+A literal (also known as a literal constant) is a fixed value that has been inserted directly into the source code.
+
+Literals and variables both have a value (and a type). Unlike a variable (whose value can be set and changed through initialization and assignment respectively), the value of a literal is fixed. A literal’s value is placed directly in the executable, and the executable itself can’t be changed after it is created. A variable’s value is placed in memory, and the value of memory can be changed while the executable is running.
+
+```cpp
+#include <iostream>
+
+int main()
+{
+    std::cout << 5 << '\n'; // print the value of a literal
+
+    int x { 5 };
+    std::cout << x << '\n'; // print the value of a variable
+    return 0;
+}
+```
+
+### Operators
+In mathematics, an operation is a process involving zero or more input values (called operands) that produces a new value (called an output value). The specific operation to be performed is denoted by a symbol called an operator.
+
+```cpp
+#include <iostream>
+
+int main()
+{
+    std::cout << 1 + 2 << '\n';
+
+    return 0;
+}
+```
+literals `1` and `2` are operands to the plus (`+`) operator, which produces the output value `3`. This output value is then printed to the console. In C++, the output value of an operation is often called a **return value**.
+
+For operators that are symbols, it is common to append the operator’s symbol to the word operator. Plus operator would be written `operator+`, and the extraction operator would be written `operator>>`.
+
+The number of operands that an operator takes as input is called the operator’s **arity**.
+
+**Unary** operators act on one operand. An example of a unary operator is the `- operator`. For example, given `-5`, operator- takes literal operand `5` and flips its sign to produce new output value `-5`.
+
+**Binary** operators act on two operands (often called *left* and *right*, as the left operand appears on the left side of the operator, and the right operand appears on the right side of the operator). An example of a binary operator is the `+` operator. For example, given `3 + 4`, `operator+` takes the left operand `3` and the right operand `4` and applies mathematical addition to produce new output value 7. The insertion (`<<`) and extraction (`>>`) operators are binary operators, taking `std::cout` or `std::cin` on the left side, and the value to output or variable to input to on the right side.
+
+**Ternary** operators act on three operands. There is only one of these in C++ (the conditional operator), which we’ll cover later.
+
+**Nullary** operators act on zero operands. There is also only one of these in C++ (the throw operator), which we’ll also cover later.
+
+Note that some operators have more than one meaning depending on how they are used. For example, operator- has two contexts. It can be used in unary form to invert a number’s sign (e.g. to convert 5 to -5, or vice versa), or it can be used in binary form to do subtraction (e.g. 4 - 3).
+
+### Return values and side effects
+Most operators in C++ just use their operands to calculate a return value. Some operators have additional behaviors. An operator (or function) that has some observable effect beyond producing a return value is said to have a **side effect**. For example, `x = 5` has the side effect of assigning value `5` to variable `x`. The changed value of `x` is observable (e.g. by printing the value of `x`) even after the operator has finished executing.
+
+Both `operator=` and `operator<<` (when used to output values to the console) return their left operand. Thus, `x = 5` returns `x`, and `std::cout << 5` returns `std::cout`. This is done so that these operators can be chained.
+
+For example, `x = y = 5` evaluates as `x = (y = 5)`. First `y = 5` assigns `5` to `y`. This operation then returns `y`, which can then be assigned to `x`.
+
+`std::cout << "Hello " << "world!"` evaluates as (`std::cout << "Hello ") << "world!"`. This first prints `"Hello "` to the console. This operation returns `std::cout`, which can then be used to print `"world!"` to the console as well.
+
+
 ## [Introduction to expressions](https://www.learncpp.com/cpp-tutorial/introduction-to-expressions/)
+
+### Expressions
+In general programming, an **expression** is a non-empty sequence of literals, variables, operators, and function calls that calculates a value. The process of executing an expression is called **evaluation**, and the resulting value produced is called the **result** of the expression (also sometimes called the **return value**).
+
+Wherever a single value is expected in C++, you can use an value-producing expression instead, and the expression will be evaluated to produce a single value.
+
+Expressions do not end in a semicolon, and cannot be compiled by themselves. An **expression statement** is a statement that consists of an expression followed by a semicolon. When the expression statement is executed, the expression will be evaluated.
+
+Thus, we can take any expression (such as `x = 5`), and turn it into an expression statement (`x = 5;`) that will compile. When an expression is used in an expression statement, any result generated by the expression is discarded.
+
+Simplifying a bit, a **subexpression** is an expression used as an operand. For example, the subexpressions of `x = 4 + 5` are `x` and `4 + 5`. The subexpressions of `4 + 5` are `4` and `5`.
+
+A **full expression** is an expression that is not a subexpression. All three expressions above (`2`, `2 + 3`, and `x = 4 + 5`) are full expressions.
+
+In casual language, a **compound expression** is an expression that contains two or more uses of operators. `x = 4 + 5` is a compound expression because it contains two uses of operators (`operator=` and `operator+`). `2` and `2 + 3` are not compound expressions.
 
 
 ## [Developing your first program](https://www.learncpp.com/cpp-tutorial/developing-your-first-program/)
 
+>You have to write a program once to know how you should have written it the first time.
+
+
+## [Summary and quiz](https://www.learncpp.com/cpp-tutorial/chapter-1-summary-and-quiz/)
+
+A statement is a type of instruction that causes the program to perform some action. Statements are often terminated by a semicolon.
+
+A function is a collection of statements that execute sequentially. Every C++ program must include a special function named main. When you run your program, execution starts at the top of the main function.
+
+In programming, the name of a function (or object, type, template, etc…) is called its identifier.
+
+The rules that govern how elements of the C++ language are constructed is called syntax. A syntax error occurs when you violate the grammatical rules of the language.
+
+Comments allow the programmer to leave notes in the code. C++ supports two types of comments. Line comments start with a // and run to the end of the line. Block comments start with a /* and go to the paired */ symbol. Don’t nest block comments.
+
+You can use comments to temporarily disable lines or sections of code. This is called commenting out your code.
+
+Data is any information that can be moved, processed, or stored by a computer. A single piece of data is called a value. Common examples of values include letters (e.g. a), numbers (e.g. 5), and text (e.g. Hello).
+
+A variable is a named piece of memory that we can use to store values. In order to create a variable, we use a statement called a definition statement. When the program is run, each defined variable is instantiated, which means it is assigned a memory address.
+
+A data type tells the compiler how to interpret a piece of data into a meaningful value. An integer is a number that can be written without a fractional component, such as 4, 27, 0, -2, or -12.
+
+Copy assignment (via operator=) can be used to assign an already created variable a value.
+
+The process of specifying an initial value for an object is called initialization, and the syntax used to initialize an object is called an initializer.
+
+Simplified, C++ supports 6 basic types of initialization:
+
+| Initialization Type         | Example       | Note                                                                 |
+|-----------------------------|---------------|----------------------------------------------------------------------|
+| Default initialization      | int x;        | In most cases, leaves variable with indeterminate value              |
+| Copy initialization         | int x = 5;    |                                                                      |
+| Direct initialization       | int x ( 5 );  |                                                                      |
+| Direct list initialization  | int x { 5 };  | Narrowing conversions disallowed                                     |
+| Copy list initialization    | int x = { 5 };| Narrowing conversions disallowed                                     |
+| Value initialization        | int x {};     | Usually performs zero initialization                                 |
+
+Direct initialization is sometimes called parenthesis initialization, and list initialization (including value initialization) is sometimes called uniform initialization or brace initialization. You should prefer brace initialization over the other initialization forms, and prefer initialization over assignment.
+Although you can define multiple variables in a single statement, it’s better to define and initialize each variable on its own line, in a separate statement.
+
+std::cout and operator<< allow us to output the result of an expression to the console.
+
+std::endl outputs a newline character, forcing the console cursor to move to the next line, and flushes any pending output to the console. The '\n' character also outputs a newline character, but lets the system decide when to flush the output. Be careful not to use '/n' (forward slash).
+
+std::cin and operator>> allow us to get a value from the keyboard.
+
+A variable that has not been given a value is called an uninitialized variable. Trying to get the value of an uninitialized variable will result in undefined behavior, which can manifest in any number of ways.
+
+C++ reserves a set of names called keywords. These have special meaning within the language and may not be used as variable names.
+
+A literal constant is a fixed value inserted directly into the source code. Examples are 5 and “Hello world!”.
+
+An operation is a process involving zero or more input values, called operands. The specific operation to be performed is denoted by the provided operator. The result of an operation produces an output value.
+
+Unary operators take one operand. Binary operators take two operands, often called left and right. Ternary operators take three operands. Nullary operators take zero operands.
+
+An expression is a sequence of literals, variables, operators, and function calls that are evaluated to produce a single output value. The calculation of this output value is called evaluation. The value produced is the result of the expression.
+
+An expression statement is an expression that has been turned into a statement by placing a semicolon at the end of the expression.
+
+When writing programs, add a few lines or a function, compile, resolve any errors, and make sure it works. Don’t wait until you’ve written an entire program before compiling it for the first time!
+
+Focus on getting your code working. Once you are sure you are going to keep some bit of code, then you can spend time removing (or commenting out) temporary/debugging code, adding comments, handling error cases, formatting your code, ensuring best practices are followed, removing redundant logic, etc…
+
+First-draft programs are often messy and imperfect. Most code requires cleanup and refinement to get to great!
+
 
 # [Functions and Files](https://www.learncpp.com/cpp-tutorial/introduction-to-functions/)
+
+
+## [Introduction to functions](https://www.learncpp.com/cpp-tutorial/introduction-to-functions/)
+
+
+## [Function return values (value-returning functions)](https://www.learncpp.com/cpp-tutorial/function-return-values-value-returning-functions/)
+
+
+## [Void functions (non-value returning functions)](https://www.learncpp.com/cpp-tutorial/void-functions-non-value-returning-functions/)
+
+
+## [Introduction to function parameters and arguments](https://www.learncpp.com/cpp-tutorial/introduction-to-function-parameters-and-arguments/)
+
+
+## [Introduction to local scope](https://www.learncpp.com/cpp-tutorial/introduction-to-local-scope/)
+
+
+## [Why functions are useful, and how to use them effectively](https://www.learncpp.com/cpp-tutorial/why-functions-are-useful-and-how-to-use-them-effectively/)
+
+
+## [Forward declarations and definitions](https://www.learncpp.com/cpp-tutorial/forward-declarations/)
+
+
+## [Programs with multiple code files](https://www.learncpp.com/cpp-tutorial/programs-with-multiple-code-files/)
+
+
+## [Naming collisions and an introduction to namespaces](https://www.learncpp.com/cpp-tutorial/naming-collisions-and-an-introduction-to-namespaces/)
+
+
+## [Introduction to the preprocessor](https://www.learncpp.com/cpp-tutorial/introduction-to-the-preprocessor/)
+
+
+## [Header files](https://www.learncpp.com/cpp-tutorial/header-files/)
+
+
+## [Header guards](https://www.learncpp.com/cpp-tutorial/header-guards/)
+
+
+## [How to design your first programs](https://www.learncpp.com/cpp-tutorial/how-to-design-your-first-programs/)
+
+
+## [Summary and quiz](https://www.learncpp.com/cpp-tutorial/chapter-2-summary-and-quiz/)
+
+
+# [Input and output (I/O) streams](https://www.learncpp.com/cpp-tutorial/input-and-output-io-streams/)
+
+Reference: [Input/output library](https://en.cppreference.com/w/cpp/io)
+
+
+## [Input and output (I/O) streams](https://www.learncpp.com/cpp-tutorial/input-and-output-io-streams/)
+
+### Streams
+
+The second thing you may notice is that the word “stream” is used an awful lot. At its most basic, I/O in C++ is implemented with streams. Abstractly, a stream is just a sequence of bytes that can be accessed sequentially. Over time, a stream may produce or consume potentially unlimited amounts of data.
+
+Typically we deal with two different types of streams. **Input streams** are used to hold input from a data producer, such as a keyboard, a file, or a network. For example, the user may press a key on the keyboard while the program is currently not expecting any input. Rather than ignore the users keypress, the data is put into an input stream, where it will wait until the program is ready for it.
+
+Conversely, **output streams** are used to hold output for a particular data consumer, such as a monitor, a file, or a printer. When writing data to an output device, the device may not be ready to accept that data yet -- for example, the printer may still be warming up when the program writes data to its output stream. The data will sit in the output stream until the printer begins consuming it.
+
+Some devices, such as files and networks, are capable of being both input and output sources.
+
+The nice thing about streams is the programmer only has to learn how to interact with the streams in order to read and write data to many different kinds of devices. The details about how the stream interfaces with the actual devices they are hooked up to is left up to the environment or operating system.
+
+### Input/output in C++
+The **istream** class is the primary class used when dealing with input streams. With input streams, the **extraction operator (>>)** is used to remove values from the stream. This makes sense: when the user presses a key on the keyboard, the key code is placed in an input stream. Your program then extracts the value from the stream so it can be used.
+
+The *ostream* class is the primary class used when dealing with output streams. With output streams, the **insertion operator (<<)** is used to put values in the stream. This also makes sense: you insert your values into the stream, and the data consumer (e.g. monitor) uses them.
+
+The **iostream** class can handle both input and output, allowing bidirectional I/O.
+
+### Standard streams in C++
+A **standard stream** is a pre-connected stream provided to a computer program by its environment. C++ comes with four predefined standard stream objects that have already been set up for your use. The first three, you have seen before:
+
+1. cin -- an istream object tied to the standard input (typically the keyboard)
+1. cout -- an ostream object tied to the standard output (typically the monitor)
+1. cerr -- an ostream object tied to the standard error (typically the monitor), providing unbuffered output
+1. clog -- an ostream object tied to the standard error (typically the monitor), providing buffered output
+Unbuffered output is typically handled immediately, whereas buffered output is typically stored and written out as a block.
+
+## [Input with istream](https://www.learncpp.com/cpp-tutorial/input-with-istream/)
+
+
+## [Output with ostream and ios](https://www.learncpp.com/cpp-tutorial/output-with-ostream-and-ios/)
+
+
+## [Stream classes for strings](https://www.learncpp.com/cpp-tutorial/stream-classes-for-strings/)
+
+
+## [Stream states and input validation](https://www.learncpp.com/cpp-tutorial/stream-states-and-input-validation/)
+
+
+## [Basic file I/O](https://www.learncpp.com/cpp-tutorial/basic-file-io/)
+
+Basic file I/O classes in C++:
+- **ifstream** (derived from istream): File input stream.
+- **ofstream** (derived from ostream): File output stream.
+- **fstream** (derived from iostream): File input/output stream.
+
+To open a file for reading and/or writing, simply instantiate an object of the appropriate file I/O class, with the name of the file as a parameter. Then use the insertion (`<<`) or extraction (`>>`) operator to write to or read data from the file. Once you are done, there are several ways to close a file: explicitly call the close() function, or just let the file I/O variable go out of scope (the file I/O class destructor will close the file for you).
+
+### File input
+```cpp
+#include <fstream>
+#include <iostream>
+#include <string>
+
+int main()
+{
+    // ifstream is used for reading files
+    // We'll read from a file called Sample.txt
+    std::ifstream inf{ "Sample.txt" };
+
+    // If we couldn't open the output file stream for reading
+    if (!inf)
+    {
+        // Print an error and exit
+        std::cerr << "Uh oh, Sample.txt could not be opened for reading!\n";
+        return 1;
+    }
+
+    // While there's still stuff left to read
+    // operator>> breaks on whitespace
+    std::string strInput{};
+    while (inf >> strInput)
+        std::cout << strInput << '\n';
+    
+    // Alternatively, you can use getline to read a line
+    while (std::getline(inf, strInput))
+        std::cout << strInput << '\n';
+
+    return 0;
+
+    // When inf goes out of scope, the ifstream
+    // destructor will close the file
+}
+```
+
+### File output
+```cpp
+#include <fstream>
+#include <iostream>
+
+int main()
+{
+    // ofstream is used for writing files
+    // We'll make a file called Sample.txt
+    std::ofstream outf{ "Sample.txt" };
+
+    // If we couldn't open the output file stream for writing
+    if (!outf)
+    {
+        // Print an error and exit
+        std::cerr << "Uh oh, Sample.txt could not be opened for writing!\n";
+        return 1;
+    }
+
+    // We'll write two lines into this file
+    outf << "This is line 1\n";
+    outf << "This is line 2\n";
+
+    return 0;
+
+    // When outf goes out of scope, the ofstream
+    // destructor will close the file
+}
+```
+
+### Buffered output
+Output in C++ may be buffered for performance, meaning data isn't written to disk immediately. Flushing the buffer writes its contents to disk, which can be done by closing the file or using `ostream::flush()` or `std::flush`. If a program terminates unexpectedly, unflushed data may be lost. Using `std::endl` also flushes the buffer, so using `'\n'` instead can improve performance by avoiding unnecessary flushes.
+
+### File modes
+The File stream constructors take an optional second parameter that allows you to specify information about how the file should be opened. This parameter is called mode, and the valid flags that it accepts live in the ios class.
+
+| Ios File Mode | Meaning                                           |
+|---------------|---------------------------------------------------|
+| app           | Opens the file in append mode                     |
+| ate           | Seeks to the end of the file before reading/writing|
+| binary        | Opens the file in binary mode (instead of text mode)|
+| in            | Opens the file in read mode (default for ifstream)|
+| out           | Opens the file in write mode (default for ofstream)|
+| trunc         | Erases the file if it already exists              |
+
+It is possible to specify multiple flags by bitwise ORing them together (using the `|` operator). ifstream defaults to `std::ios::in` file mode. ofstream defaults to `std::ios::out` file mode. And fstream defaults to `std::ios::in | std::ios::out` file mode, meaning you can both read and write by default.
+
+```cpp
+#include <iostream>
+#include <fstream>
+
+int main()
+{
+    // We'll pass the ios:app flag to tell the ofstream to append
+    // rather than rewrite the file. We do not need to pass in std::ios::out
+    // because ofstream defaults to std::ios::out
+    std::ofstream outf{ "Sample.txt", std::ios::app };
+
+    // If we couldn't open the output file stream for writing
+    if (!outf)
+    {
+        // Print an error and exit
+        std::cerr << "Uh oh, Sample.txt could not be opened for writing!\n";
+        return 1;
+    }
+
+    outf << "This is line 3\n";
+    outf << "This is line 4\n";
+
+    return 0;
+
+    // When outf goes out of scope, the ofstream
+    // destructor will close the file
+}
+```
+
+
+## [Random file I/O](https://www.learncpp.com/cpp-tutorial/random-file-io/)
