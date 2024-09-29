@@ -2,6 +2,8 @@
 
 [C++ Reference](https://en.cppreference.com/w/)
 
+[C++ Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines)
+
 Started: 2024-09-03
 
 # [Chapter 0: Introduction](https://www.learncpp.com/cpp-tutorial/introduction-to-these-tutorials/)
@@ -156,5 +158,214 @@ double c;
 ### Summary
 In C++, we use objects to access memory. A named object is called a variable. Variables have an identifier, a type, and a value (and some other attributes that aren’t relevant here). A variable’s type is used to determine how the value in memory should be interpreted.
 
-## (Variable assignment and initialization)[https://www.learncpp.com/cpp-tutorial/variable-assignment-and-initialization/]
+## [Variable assignment and initialization](https://www.learncpp.com/cpp-tutorial/variable-assignment-and-initialization/)
 
+### Variable assignment
+Is done using the assignment operator `=`. The value on the right side of the assignment operator is assigned to the variable on the left side.
+
+### Variable initialization
+Is the process of giving a variable an initial value. Different forms of initialization:
+```cpp
+int a;         // default-initialization (no initializer)
+
+// Traditional initialization forms:
+int b = 5;     // copy-initialization (initial value after equals sign)
+int c ( 6 );   // direct-initialization (initial value in parenthesis)
+
+// Modern initialization forms (preferred):
+int d { 7 };   // direct-list initialization (initial value in braces)
+int f {};      // value-initialization (empty braces)
+```
+- Copy-initialization is also used whenever values are implicitly copied, such as when passing arguments to a function by value, returning from a function by value, or catching exceptions by value.
+- One of the reasons direct-initialization had fallen out of favor is because it makes it hard to differentiate variables from functions.
+- List-initialization was introduced to provide a consistent initialization syntax (which is why it is sometimes called “uniform initialization”) that makes it clear we’re doing initialization.
+
+The primary benefit of list-initialization is that “narrowing conversions” are disallowed. This means that if you try to list-initialize a variable using a value that the variable can not safely hold, the compiler is required to produce a diagnostic (usually an error). For example:
+```cpp
+int main()
+{
+    // An integer can only hold non-fractional values
+    int w1 { 4.5 }; // compile error: list init does not allow narrowing conversion of 4.5 to 4
+
+    int w2 = 4.5;   // compiles: copy-init initializes width with 4
+    int w3(4.5);    // compiles: direct-init initializes width with 4
+
+    w1 = 4.5;       // okay: copy-assignment allows narrowing conversion of 4.5 to 4
+
+    return 0;
+}
+```
+
+List-initialization is generally preferred over the other initialization forms because it works in most cases (and is therefore most consistent), it disallows narrowing conversions (which we normally don’t want), and it supports initialization with a list of values (something we’ll cover in a future lesson).
+
+Use direct-list-initialization when you’re actually using the initial value. Use value-initialization when the object’s value is temporary and will be replaced:
+```cpp
+int x { 0 };    // direct-list-initialization with initial value 0
+std::cout << x; // we're using that 0 value here
+
+int x {};      // value initialization
+std::cin >> x; // we're immediately replacing that value so an explicit 0 would be meaningless
+```
+
+**Initialize your variables upon creation. You may eventually find cases where you want to ignore this advice for a specific reason (e.g. a performance critical section of code that uses a lot of variables), and that’s okay, as long as the choice is made deliberately.**
+
+[[maybe_unused]] attribute:
+```cpp
+#include <iostream>
+
+int main()
+{
+    [[maybe_unused]] double pi { 3.14159 };  // Don't complain if pi is unused
+    [[maybe_unused]] double gravity { 9.8 }; // Don't complain if gravity is unused
+    [[maybe_unused]] double phi { 1.61803 }; // Don't complain if phi is unused
+
+    std::cout << pi << '\n';
+    std::cout << phi << '\n';
+
+    // The compiler will no longer warn about gravity not being used
+
+    return 0;
+}
+```
+
+Additionally, the compiler will likely optimize these variables out of the program, so they have no performance impact.
+
+The [[maybe_unused]] attribute should only be applied selectively to variables that have a specific and legitimate reason for being unused (e.g. because you need a list of named values, but which specific values are actually used in a given program may vary).
+
+## [Introduction to iostream: cout, cin, and endl](https://www.learncpp.com/cpp-tutorial/introduction-to-iostream-cout-cin-and-endl/)
+
+### The input/output library
+#### std::cout and std::endl
+
+`std::cout` used with the insertion operator `<<` to output data to the console. Concatenation is possible.
+```cpp
+#include <iostream> // for std::cout and std::endl
+
+int main()
+{
+    std::cout << "Hi!" << std::endl; // std::endl will cause the cursor to move to the next line and flush the buffer
+    std::cout << "My name is Alex." << std::endl;
+
+    return 0;
+}
+```
+
+`std::cout` is buffered. This means that the data you send to `std::cout` is not immediately displayed on the screen. Instead, it is stored in a region of memory set aside to collect such requests (called a **buffer**) until the buffer is full, or until you flush the buffer.
+
+Writing data to a buffer is typically fast, whereas transferring a batch of data to an output device is comparatively slow. Buffering can significantly increase performance by batching multiple output requests together to minimize the number of times output has to be sent to the output device.
+
+To output a newline without flushing the output buffer, we use `\n` (inside either single or double quotes), which is a special symbol that the compiler interprets as a newline character. `\n` moves the cursor to the next line of the console without causing a flush, so it will typically perform better. `\n` is also more concise to type and can be embedded into existing double-quoted text.
+
+```cpp
+#include <iostream> // for std::cout
+
+int main()
+{
+    int x{ 5 };
+    std::cout << "x is equal to: " << x << '\n'; // single quoted (by itself) (conventional)
+    std::cout << "Yep." << "\n";                 // double quoted (by itself) (unconventional but okay)
+    std::cout << "And that's all, folks!\n";     // between double quotes in existing text (conventional)
+    return 0;
+}
+```
+
+In C++, we use single quotes to represent single characters (such as 'a' or '$'), and double-quotes to represent text (zero or more characters). Single quotes should be preferred in non-output cases.
+
+#### std::cin
+```cpp
+#include <iostream>  // for std::cout and std::cin
+
+int main()
+{
+    std::cout << "Enter two numbers separated by a space: ";
+
+    int x{}; // define variable x to hold user input (and value-initialize it)
+    int y{}; // define variable y to hold user input (and value-initialize it)
+    std::cin >> x >> y; // get two numbers and store in variable x and y respectively
+
+    std::cout << "You entered " << x << " and " << y << '\n';
+
+    return 0;
+}
+```
+Each line of input data in the input buffer is terminated by a '\n' character. `std::cin` is buffered because it allows us to separate the entering of input from the extract of input. We can enter input once and then perform multiple extraction requests on it.
+
+
+## [Uninitialized variables and undefined behavior](https://www.learncpp.com/cpp-tutorial/uninitialized-variables-and-undefined-behavior/)
+
+### Uninitialized variables
+- Initialized = The object is given a known value at the point of definition.
+- Assignment = The object is given a known value beyond the point of definition.
+- Uninitialized = The object has not been given a known value yet.
+
+### Undefined behavior
+Code implementing undefined behavior may exhibit any of the following symptoms:
+- Your program produces different results every time it is run.
+- Your program consistently produces the same incorrect result.
+- Your program behaves inconsistently (sometimes produces the correct result, sometimes not).
+- Your program seems like it’s working but produces incorrect results later in the program.
+- Your program crashes, either immediately or later.
+- Your program works on some compilers but not others.
+- Your program works until you change some other seemingly unrelated code.
+Or, your code may actually produce the correct behavior anyway.
+
+Unspecified behavior is almost identical to implementation-defined behavior in that the behavior is left up to the implementation (a specific compiler and the associated standard library it comes with) to define, but the implementation is not required to document the behavior.
+
+Avoid implementation-defined and unspecified behavior whenever possible, as they may cause your program to malfunction on other implementations.
+
+## [Keywords and naming identifiers](https://www.learncpp.com/cpp-tutorial/keywords-and-naming-identifiers/)
+
+### Keywords
+C++ reserves a set of 92 words (as of C++23) for its own use. These words are called keywords (or reserved words), and each of these keywords has a special meaning within the C++ language:
+
+|               |               |               |               |
+|---------------|---------------|---------------|---------------|
+| alignas       | alignof       | and           | and_eq        |
+| asm           | auto          | bitand        | bitor         |
+| bool          | break         | case          | catch         |
+| char          | char8_t       | char16_t      | char32_t      |
+| class         | compl         | concept       | const         |
+| consteval     | constexpr     | constinit     | const_cast    |
+| continue      | co_await      | co_return     | co_yield      |
+| decltype      | default       | delete        | do            |
+| double        | dynamic_cast  | else          | enum          |
+| explicit      | export        | extern        | false         |
+| float         | for           | friend        | goto          |
+| if            | inline        | int           | long          |
+| mutable       | namespace     | new           | noexcept      |
+| not           | not_eq        | nullptr       | operator      |
+| or            | or_eq         | private       | protected     |
+| public        | register      | reinterpret_cast | requires   |
+| return        | short         | signed        | sizeof        |
+| static        | static_assert | static_cast   | struct        |
+| switch        | template      | this          | thread_local  |
+| throw         | true          | try           | typedef       |
+| typeid        | typename      | union         | unsigned      |
+| using         | virtual       | void          | volatile      |
+| wchar_t       | while         | xor           | xor_eq        |
+
+C++ also defines special identifiers: override, final, import, and module. These have a specific meaning when used in certain contexts but are not reserved otherwise.
+
+### Identifier naming rules
+- The identifier can not be a keyword. Keywords are reserved.
+The identifier can only be composed of letters (lower or upper case), numbers, and - the underscore character. That means the name can not contain symbols (except the underscore) nor whitespace (spaces or tabs).
+The identifier must begin with a letter (lower or upper case) or an underscore. It - can not start with a number.
+C++ is case sensitive, and thus distinguishes between lower and upper case letters. - `nvalue` is different than `nValue` is different than `NVALUE`.
+
+### Naming conventions
+
+Avoid naming your identifiers starting with an underscore, as these names are typically reserved for OS, library, and/or compiler use.
+
+Avoid abbreviations (unless they are common/unambiguous), they make your code harder to read. Code is read more often than it is written, the time you saved while writing the code is time that every reader, including the future you, wastes when reading it.
+
+## [Whitespace and basic formatting](https://www.learncpp.com/cpp-tutorial/whitespace-and-basic-formatting/)
+
+
+## [Introduction to literals and operators](https://www.learncpp.com/cpp-tutorial/introduction-to-literals-and-operators/)
+## [Introduction to expressions](https://www.learncpp.com/cpp-tutorial/introduction-to-expressions/)
+
+
+## [Developing your first program](https://www.learncpp.com/cpp-tutorial/developing-your-first-program/)
+
+
+# [Functions and Files](https://www.learncpp.com/cpp-tutorial/introduction-to-functions/)
